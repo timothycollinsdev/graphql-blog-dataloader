@@ -1,7 +1,5 @@
 import Comment from "./models/Comment";
 import Post from "./models/Post";
-import { groupBy, map } from "ramda";
-import DataLoader from "dataloader";
 
 export const resolvers = {
   Query: {
@@ -60,13 +58,3 @@ export const resolvers = {
     },
   },
 };
-
-export async function commentsDataLoader() {
-  return new DataLoader(commentsByPostIds);
-}
-
-async function commentsByPostIds(postIds) {
-  const comments = await Comment.find({ postId: { $in: postIds } });
-  const groupByIds = groupBy((comment) => comment.postId, comments);
-  return map((postId) => groupByIds[postId], postIds);
-}
